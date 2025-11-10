@@ -1,16 +1,68 @@
 import { ArrowDown, Sparkles } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { motion } from 'motion/react';
+import ColorBends from './ui/ColorBends';
 
 export default function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [typedLength, setTypedLength] = useState(0);
+  const timeoutRef = useRef<number>();
+  const hoverText = 'more than ';
+
+  // No-op: removed mouse-follow overlay; keep minimal effects only for typing cleanup
+
+  const clearCurrentTimeout = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = undefined;
+    }
+  };
+
+  const handleMouseEnter = () => {
+    clearCurrentTimeout();
+    
+    if (typedLength === 0) {
+      let currentIndex = 0;
+      
+      const typeNextChar = () => {
+        if (currentIndex < hoverText.length) {
+          setTypedLength(currentIndex + 1);
+          // Skip delay for spaces - type them instantly
+          const delay = hoverText[currentIndex] === ' ' ? 0 : 100;
+          currentIndex++;
+          timeoutRef.current = setTimeout(typeNextChar, delay);
+        }
+      };
+      
+      typeNextChar();
+    }
+  };
+
+  const handleMouseLeave = () => {
+    clearCurrentTimeout();
+    
+    if (typedLength > 0) {
+      let deleteIndex = typedLength - 1;
+      
+      const deleteNextChar = () => {
+        if (deleteIndex >= 0) {
+          // Skip delay for spaces - delete them instantly
+          const delay = hoverText[deleteIndex] === ' ' ? 0 : 100;
+          setTypedLength(deleteIndex);
+          deleteIndex--;
+          timeoutRef.current = setTimeout(deleteNextChar, delay);
+        } else {
+          setTypedLength(0);
+        }
+      };
+      
+      deleteNextChar();
+    }
+  };
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    return () => {
+      clearCurrentTimeout();
     };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   const scrollToAbout = () => {
@@ -18,72 +70,76 @@ export default function Hero() {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative bg-slate-950 overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(14, 165, 233, 0.15), transparent 40%)`
-          }}
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black">
+      {/* ColorBends background */}
+      <div className="absolute inset-0">
+        <ColorBends
+          colors={[]}
+          rotation={90}
+          speed={0.2}
+          scale={1}
+          frequency={1}
+          warpStrength={1}
+          mouseInfluence={1}
+          parallax={0.6}
+          noise={0.1}
+          transparent
         />
       </div>
 
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+      <motion.div
+        initial={{ opacity: 0.0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.3,
+          duration: 0.8,
+          ease: "easeInOut",
+        }}
+        className="relative z-10 flex flex-col gap-4 items-center justify-center px-4 mx-auto text-center"
+      >
+        {/* Badge */}
+        <div 
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium glass-text"
+          style={{
+            background: 'rgba(255, 255, 255, 0.06)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.18)'
+          }}
+        >
+          <Sparkles size={16} />
+          Available for new opportunities
+        </div>
 
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-sky-500/20 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-float-delayed"></div>
-
-      <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <div className="space-y-8 animate-fadeInUp">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-sm font-medium backdrop-blur-sm">
-            <Sparkles size={16} className="animate-pulse" />
-            Available for new opportunities
-          </div>
-
-          {/* Main headline with gradient text */}
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-white tracking-tight">
-            <span className="block">Frontend</span>
-            <span className="block bg-gradient-to-r from-sky-400 via-cyan-400 to-blue-500 text-transparent bg-clip-text animate-gradient">
-              Developer
+        {/* Main headline with hover typing effect */}
+        <div 
+          className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight cursor-pointer"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="flex flex-col items-center">
+            <span style={{ color: '#ffffff' }}>
+              I'm {hoverText.substring(0, typedLength)} a
             </span>
-          </h1>
-
-          <p className="text-xl md:text-2xl text-slate-300 font-light max-w-3xl mx-auto leading-relaxed">
-            Crafting elegant digital experiences through clean code,
-            <br className="hidden md:block" />
-            thoughtful design, and modern technology
-          </p>
-
-          {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-            <a
-              href="#contact"
-              className="group relative px-8 py-4 bg-sky-500 text-white rounded-full font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-sky-500/50"
-            >
-              <span className="relative z-10">Let's Connect</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-sky-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </a>
-            <a
-              href="#experience"
-              className="px-8 py-4 bg-white/5 text-white rounded-full font-semibold backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300"
-            >
-              View My Work
-            </a>
+            <span style={{ color: '#ffffff' }}>frontend developer</span>
           </div>
         </div>
 
-        <button
-          onClick={scrollToAbout}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 text-slate-400 hover:text-white transition-colors duration-300 animate-bounce cursor-pointer"
-          aria-label="Scroll to about section"
-        >
-          <ArrowDown size={32} />
-        </button>
-      </div>
-    </section>
+        <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed" style={{ color: '#d1d5db' }}>
+          Crafting elegant digital experiences through clean code,
+          <br className="hidden md:block" />
+          thoughtful design, and modern technology
+        </p>
+      </motion.div>
+
+      <button
+        onClick={scrollToAbout}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 transition-colors duration-300 animate-bounce cursor-pointer z-10 hover:opacity-80"
+        style={{ color: '#d1d5db' }}
+        aria-label="Scroll to about section"
+      >
+        <ArrowDown size={32} />
+      </button>
+    </div>
   );
 }

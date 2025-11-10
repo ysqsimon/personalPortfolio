@@ -1,4 +1,5 @@
 import { Code, Lightbulb, Rocket, Target } from 'lucide-react';
+import MagnetCard from './ui/MagnetCard';
 
 const principles = [
   {
@@ -25,24 +26,21 @@ const principles = [
 
 export default function About() {
   return (
-    <section id="about" className="py-32 bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-sky-100 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-100 rounded-full blur-3xl opacity-30 translate-y-1/2 -translate-x-1/2"></div>
+    <section id="about" className="py-32 relative overflow-hidden bg-black">
 
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left side - Text content */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-5xl md:text-6xl font-bold text-slate-900">
+              <h2 className="text-5xl md:text-6xl font-bold glass-text">
                 Building the web,
-                <span className="block text-sky-600">one pixel at a time</span>
+                <span className="block glass-text">one pixel at a time</span>
               </h2>
-              <div className="w-20 h-1 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full"></div>
+              <div className="w-20 h-1 bg-gradient-to-r from-white/40 to-white/60 rounded-full"></div>
             </div>
 
-            <div className="space-y-6 text-lg text-slate-700 leading-relaxed">
+            <div className="space-y-6 text-lg glass-text-muted leading-relaxed">
               <p>
                 I'm a frontend developer passionate about building interfaces that feel natural and effortless.
                 My approach combines technical precision with creative problem-solving to deliver experiences
@@ -62,16 +60,16 @@ export default function About() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-8">
               <div>
-                <div className="text-4xl font-bold text-sky-600">5+</div>
-                <div className="text-sm text-slate-600 mt-1">Years Experience</div>
+                <div className="text-4xl font-bold glass-text">5+</div>
+                <div className="text-sm glass-text-muted mt-1">Years Experience</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-sky-600">50+</div>
-                <div className="text-sm text-slate-600 mt-1">Projects Completed</div>
+                <div className="text-4xl font-bold glass-text">50+</div>
+                <div className="text-sm glass-text-muted mt-1">Projects Completed</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-sky-600">100%</div>
-                <div className="text-sm text-slate-600 mt-1">Client Satisfaction</div>
+                <div className="text-4xl font-bold glass-text">100%</div>
+                <div className="text-sm glass-text-muted mt-1">Client Satisfaction</div>
               </div>
             </div>
           </div>
@@ -79,23 +77,22 @@ export default function About() {
           {/* Right side - Principles cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {principles.map((principle, index) => (
-              <div
-                key={index}
-                className="group relative bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-100 hover:border-sky-200 hover:-translate-y-2"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-50 to-cyan-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative z-10">
-                  <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <principle.icon size={24} className="text-white" />
+              <MagnetCard
+                  key={index}
+                  className="p-6 rounded-2xl"
+                >
+                  <div className="relative z-10">
+                    <div className="card-icon-container w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                      <principle.icon size={24} className="text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold glass-text mb-2">
+                      {principle.title}
+                    </h3>
+                    <p className="text-sm glass-text-muted leading-relaxed">
+                      {principle.description}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2">
-                    {principle.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    {principle.description}
-                  </p>
-                </div>
-              </div>
+                </MagnetCard>
             ))}
           </div>
         </div>
