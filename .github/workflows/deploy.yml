@@ -38,6 +38,7 @@ jobs:
         run: pnpm build
         env:
           GITHUB_PAGES: true
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
