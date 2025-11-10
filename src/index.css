@@ -47,6 +47,15 @@ body {
   /* Keep momentum scrolling for touch devices */
   -webkit-overflow-scrolling: touch;
   cursor: none !important;
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
 }
 
 /* Unified card styles and animations */
@@ -134,22 +143,28 @@ select {
   }
 }
 
-/* Custom scrollbar for better visual feedback */
-::-webkit-scrollbar {
-  width: 8px;
+/* Hide scrollbar for all browsers */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-::-webkit-scrollbar-track {
-  background: #1f1f1f;
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #4a4a4a;
-  border-radius: 4px;
+/* Hide scrollbar on all scrollable elements */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #6a6a6a;
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
 }
 
 /* Keyframes */
